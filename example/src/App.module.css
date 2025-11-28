@@ -52,6 +52,7 @@ h4 {
   font-size: 1em;
   font-weight: 300;
   margin-top: 1em;
+  cursor: pointer;
 }
 
 .inlineCode {

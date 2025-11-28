@@ -6,7 +6,7 @@ import {
   markers,
 } from "../../constants";
 import type { RouteConfig } from "../../types";
-import "./GoogleMapCanvas.css";
+import styles from "./GoogleMapCanvas.module.css";
 
 interface GoogleMapCanvasProps {
   route: RouteConfig;
@@ -59,7 +59,7 @@ export const GoogleMapCanvas = ({
             window.google?.maps?.CollisionBehavior?.REQUIRED_AND_HIDES_OPTIONAL,
         },
         label: {
-          className: "rrp-marker-label",
+          className: styles.markerLabel,
           color: "#84CC16",
           fontSize: "20px",
           fontWeight: "bold",

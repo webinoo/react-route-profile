@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { RouteMap, useMapHeader } from "react-route-profile";
+import { Element, Link } from "react-scroll";
 import styles from "./App.module.css";
 import { route01 } from "./data/01-info";
 import { Usage } from "./Usage";
@@ -33,7 +34,9 @@ function App() {
             Trailforks, Outdooractive, Komoot, or Bikemap.
           </h2>
           <h3 className={styles.scrollDown}>
-            <a href=" ">Scroll down for Usage</a>
+            <Link to="usage" smooth duration={1000}>
+              Scroll down for Usage
+            </Link>
           </h3>
         </div>
       </header>
@@ -51,7 +54,9 @@ function App() {
         <RouteMap apiKey={apiKey} route={route01} height={mapHeight} />
       </div>
 
-      <Usage />
+      <Element name="usage">
+        <Usage />
+      </Element>
     </div>
   );
 }
