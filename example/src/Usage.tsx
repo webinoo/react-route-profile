@@ -105,6 +105,30 @@ export const Usage = () => (
       </pre>
 
       <div>
+        (Optional) Provide your own theme colors (primary, primaryMuted, accent,
+        surface).
+      </div>
+      <pre className={styles.codeBlock}>
+        <code>
+          {`import type { Theme } from "react-route-profile";
+
+const myTheme: Theme = {
+  colors: {
+    primary: "rgba(14, 165, 233, 1)",
+    primaryMuted: "rgba(14, 165, 233, 0.7)",
+    accent: "rgba(132, 204, 22, 1)",
+    surface: "rgba(248, 250, 252, 1)",
+  },
+  shadows: {
+    map: "0 10px 30px rgba(15, 23, 42, 0.16)",
+  },
+};
+
+<RouteMap apiKey={apiKey} route={myRoute} height="80vh" theme={myTheme} />`}
+        </code>
+      </pre>
+
+      <div>
         (Optional) Use <code className={styles.inlineCode}>useMapHeader</code>{" "}
         to size the map under a sticky header.
       </div>
@@ -146,19 +170,26 @@ export const Usage = () => (
             <td>Route data to render (center, zooms, geoJson).</td>
           </tr>
           <tr>
-            <td>height</td>
+            <td>height?</td>
             <td>number | string</td>
             <td>Map height (e.g., 520 or "100vh").</td>
           </tr>
           <tr>
-            <td>className</td>
+            <td>className?</td>
             <td>string</td>
             <td>Optional wrapper class.</td>
           </tr>
           <tr>
-            <td>style</td>
+            <td>style?</td>
             <td>CSSProperties</td>
             <td>Inline style overrides.</td>
+          </tr>
+          <tr>
+            <td>theme?</td>
+            <td>Theme</td>
+            <td>
+              Optional theme override (colors, shadows) used by map and loader.
+            </td>
           </tr>
         </tbody>
       </table>
@@ -202,6 +233,44 @@ export const Usage = () => (
             <td>geoJson</td>
             <td>FeatureCollection</td>
             <td>GeoJSON geometry and features.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>Theme</h4>
+      <table className={styles.apiTable}>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>colors?.primary?</td>
+            <td>string</td>
+            <td>Main accent color.</td>
+          </tr>
+          <tr>
+            <td>colors?.primaryMuted?</td>
+            <td>string</td>
+            <td>Softer variant of the primary.</td>
+          </tr>
+          <tr>
+            <td>colors?.accent?</td>
+            <td>string</td>
+            <td>Secondary/accent color for labels.</td>
+          </tr>
+          <tr>
+            <td>colors?.surface?</td>
+            <td>string</td>
+            <td>Background color for Loader/surfaces.</td>
+          </tr>
+          <tr>
+            <td>shadows?.map?</td>
+            <td>string</td>
+            <td>Shadow applied to the map container.</td>
           </tr>
         </tbody>
       </table>

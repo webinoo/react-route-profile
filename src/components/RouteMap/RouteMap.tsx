@@ -1,7 +1,7 @@
 import { Status, Wrapper } from "@googlemaps/react-wrapper";
 import type { CSSProperties } from "react";
 import { useOrientation } from "../../hooks/useOrientation";
-import { theme as defaultTheme, type Theme } from "../../theme";
+import { theme as defaultTheme, PartialTheme } from "../../theme";
 import { ThemeProvider } from "../../theme-provider";
 import type { RouteConfig } from "../../types";
 import Loader from "../Loader";
@@ -13,7 +13,7 @@ export interface RouteMapProps {
   height?: number | string;
   className?: string;
   style?: CSSProperties;
-  theme?: Theme;
+  theme?: PartialTheme;
 }
 
 const messages = {

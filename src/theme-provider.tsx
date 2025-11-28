@@ -1,14 +1,32 @@
-import { createContext, type ReactNode, useContext } from "react";
-import { theme as defaultTheme, type Theme } from "./theme";
+import { createContext, type ReactNode, useContext, useMemo } from "react";
+import { theme as defaultTheme, PartialTheme, type Theme } from "./theme";
 
 const ThemeContext = createContext<Theme>(defaultTheme);
 
+const mergeTheme = (override?: PartialTheme): Theme => ({
+  colors: {
+    ...defaultTheme.colors,
+    ...(override?.colors ?? {}),
+  },
+  shadows: {
+    ...defaultTheme.shadows,
+    ...(override?.shadows ?? {}),
+  },
+});
+
 export const ThemeProvider = ({
-  theme = defaultTheme,
+  theme,
   children,
 }: {
-  theme?: Theme;
+  theme?: PartialTheme;
   children: ReactNode;
-}) => <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
+}) => {
+  const mergedTheme = useMemo(() => mergeTheme(theme), [theme]);
+  return (
+    <ThemeContext.Provider value={mergedTheme}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
 
 export const useTheme = () => useContext(ThemeContext);

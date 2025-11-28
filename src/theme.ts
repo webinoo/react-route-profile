@@ -1,4 +1,20 @@
-export const theme = {
+export interface Theme {
+  colors: ThemeColors
+  shadows: ThemeShadows
+}
+
+export interface ThemeColors {
+  primary: string;
+  primaryMuted: string;
+  accent: string;
+  surface: string;
+}
+
+export interface ThemeShadows {
+  map: string;
+}
+
+export const theme: Theme = {
   colors: {
     primary: "rgba(14, 165, 233, 1)",
     primaryMuted: "rgba(14, 165, 233, 0.7)",
@@ -8,6 +24,9 @@ export const theme = {
   shadows: {
     map: "0 10px 30px rgba(15, 23, 42, 0.16)",
   },
-} as const;
+};
 
-export type Theme = typeof theme;
+export interface PartialTheme {
+  colors: Partial<ThemeColors>
+  shadows: Partial<ThemeShadows>
+}
