@@ -5,7 +5,7 @@ import {
   DEFAULT_ZOOM_VERTICAL,
   markers,
 } from "../../constants";
-import { theme } from "../../theme";
+import { useTheme } from "../../theme-provider";
 import type { RouteConfig } from "../../types";
 import styles from "./GoogleMapCanvas.module.css";
 
@@ -20,6 +20,7 @@ export const GoogleMapCanvas = ({
   height,
   isHorizontal,
 }: GoogleMapCanvasProps) => {
+  const theme = useTheme();
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -76,7 +77,7 @@ export const GoogleMapCanvas = ({
         map.data.remove(feature);
       });
     };
-  }, [route, isHorizontal]);
+  }, [route, isHorizontal, theme.colors.primaryMuted, theme.colors.accent]);
 
   return (
     <div

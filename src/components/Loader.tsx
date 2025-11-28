@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { theme } from "../theme";
+import { useTheme } from "../theme-provider";
 import styles from "./Loader.module.css";
 
 interface LoaderProps {
@@ -11,6 +11,8 @@ const Loader = ({
   message = "Loading map...",
   height = "100vh",
 }: LoaderProps) => {
+  const theme = useTheme();
+
   const style: CSSProperties = {
     height,
     background: theme.colors.surface,

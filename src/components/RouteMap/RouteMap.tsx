@@ -1,6 +1,8 @@
 import { Status, Wrapper } from "@googlemaps/react-wrapper";
 import type { CSSProperties } from "react";
 import { useOrientation } from "../../hooks/useOrientation";
+import { theme as defaultTheme, type Theme } from "../../theme";
+import { ThemeProvider } from "../../theme-provider";
 import type { RouteConfig } from "../../types";
 import Loader from "../Loader";
 import { GoogleMapCanvas } from "./GoogleMapCanvas";
@@ -11,6 +13,7 @@ export interface RouteMapProps {
   height?: number | string;
   className?: string;
   style?: CSSProperties;
+  theme?: Theme;
 }
 
 const messages = {
@@ -43,11 +46,16 @@ export const RouteMap = ({
   height = "100vh",
   className,
   style,
+  theme = defaultTheme,
 }: RouteMapProps) => {
   const { isHorizontal } = useOrientation();
 
   if (!apiKey) {
-    return <RenderLoader type="apiKey" height={height} />;
+    return (
+      <ThemeProvider theme={theme}>
+        <RenderLoader type="apiKey" height={height} />
+      </ThemeProvider>
+    );
   }
 
   const containerStyle: CSSProperties = {
@@ -57,14 +65,16 @@ export const RouteMap = ({
   };
 
   return (
-    <div className={className} style={containerStyle}>
-      <Wrapper apiKey={apiKey} render={(status) => render(status, height)}>
-        <GoogleMapCanvas
-          route={route}
-          height={height}
-          isHorizontal={isHorizontal}
-        />
-      </Wrapper>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className={className} style={containerStyle}>
+        <Wrapper apiKey={apiKey} render={(status) => render(status, height)}>
+          <GoogleMapCanvas
+            route={route}
+            height={height}
+            isHorizontal={isHorizontal}
+          />
+        </Wrapper>
+      </div>
+    </ThemeProvider>
   );
 };
