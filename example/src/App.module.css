@@ -1,0 +1,82 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  padding: 1.5em;
+  background: rgba(9, 13, 26, 0.92);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.1);
+  z-index: 10;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.6em;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 1em;
+  font-weight: 300;
+  color: rgba(14, 165, 233, 0.7);
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+}
+
+.inlineCode {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #e0f2fe;
+  padding: 0.1em 0.35em;
+  margin-left: 0.3em;
+  margin-right: 0.3em;
+  border-radius: 6px;
+  font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+}
+
+.mapWrapper {
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.content {
+  padding: 1.5em;
+  color: #e2e8f0;
+  line-height: 1.6;
+  background: #0b1224;
+}
+
+.steps {
+  padding-left: 1.5em;
+}
+
+.steps li {
+  margin-bottom: 0.75em;
+}
+
+.steps li:last-child {
+  margin-bottom: 0;
+}
+
+@media (orientation: portrait) {
+  .title {
+    font-size: 2em;
+  }
+
+  .subtitle {
+    font-size: 1em;
+  }
+
+  body {
+    font-size: 1.2em;
+  }
+}

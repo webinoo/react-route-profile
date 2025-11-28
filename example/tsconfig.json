@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "react-route-profile": ["../src"]
+    }
+  },
+  "include": ["src", "vite.config.ts", "vite-env.d.ts"]
+}
