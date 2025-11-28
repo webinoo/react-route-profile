@@ -16,5 +16,5 @@ export const useOrientation = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return isHorizontal;
+  return { isHorizontal, isVertical: !isHorizontal };
 };
