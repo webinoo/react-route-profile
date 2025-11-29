@@ -3,8 +3,15 @@ import type { ElevationPoint, Marker } from "./types";
 export const getMaxDistance = (points: ElevationPoint[]) => points.length ? points[points.length - 1].distance : 0;
 
 export const getPoints = (route: any): ElevationPoint[] => {
-  const raw =
-    (route.geoJson as any)?.properties?.elevationProfile?.points || [];
+  const geo = route.geoJson as any;
+  const fromCollection = geo?.properties?.elevationProfile?.points || [];
+  const fromLine =
+    geo?.features?.find(
+      (f: any) =>
+        f?.geometry?.type === "LineString" &&
+        f?.properties?.elevationProfile?.points
+    )?.properties?.elevationProfile?.points || [];
+  const raw = fromLine.length ? fromLine : fromCollection;
   return [...raw].sort(
     (a: ElevationPoint, b: ElevationPoint) => (a?.distance ?? 0) - (b?.distance ?? 0)
   );

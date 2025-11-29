@@ -45,8 +45,22 @@ const parseArgs = () => {
   return out;
 };
 
+const validateGeoJson = (geoJson) => {
+  if (!geoJson || geoJson.type !== "FeatureCollection") {
+    throw new Error("GeoJSON must be a FeatureCollection");
+  }
+  if (!Array.isArray(geoJson.features)) {
+    throw new Error("GeoJSON FeatureCollection must have a features array");
+  }
+  const features = geoJson.features.filter(Boolean);
+  if (!features.length) {
+    throw new Error("GeoJSON has no features");
+  }
+  return features;
+};
+
 const extractPath = (geoJson) => {
-  const features = geoJson?.features ?? [];
+  const features = validateGeoJson(geoJson);
   const line = features.find(
     (f) =>
       f?.geometry?.type === "LineString" &&
@@ -55,9 +69,14 @@ const extractPath = (geoJson) => {
   if (!line) {
     throw new Error("No LineString geometry found in GeoJSON");
   }
-  return (line.geometry?.coordinates || [])
-    .map((c) => ({ lng: c[0], lat: c[1] }))
+  const coords = line.geometry.coordinates || [];
+  const path = coords
+    .map((c) => ({ lng: Number(c[0]), lat: Number(c[1]) }))
     .filter((c) => Number.isFinite(c.lat) && Number.isFinite(c.lng));
+  if (path.length < 2) {
+    throw new Error("LineString must contain at least two valid coordinates");
+  }
+  return { path, lineFeature: line };
 };
 
 const downsamplePath = (points, maxPoints = 250) => {
@@ -111,7 +130,7 @@ const main = async () => {
 
   const raw = await fs.readFile(inputPath, "utf8");
   const geoJson = JSON.parse(raw);
-  const rawPath = extractPath(geoJson);
+  const { path: rawPath, lineFeature } = extractPath(geoJson);
   const pathPoints = downsamplePath(rawPath);
   if (rawPath.length !== pathPoints.length) {
     console.log(`Downsampled path from ${rawPath.length} to ${pathPoints.length} points.`);
@@ -141,17 +160,16 @@ const main = async () => {
   }
 
   const points = toElevationPoints(json.results || []);
-  const output = {
-    ...geoJson,
-    properties: {
-      ...(geoJson.properties || {}),
-      elevationProfile: {
-        samples,
-        points,
-        source: "google-elevation",
-      },
+  lineFeature.properties = {
+    ...(lineFeature.properties || {}),
+    elevationProfile: {
+      samples,
+      points,
+      source: "google-elevation",
     },
   };
+
+  const output = geoJson;
 
   await fs.writeFile(outputPath, JSON.stringify(output, null, 2), "utf8");
   const totalDistance =
