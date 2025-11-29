@@ -25,12 +25,19 @@ interface ElevationChartProps {
 }
 
 const MarkerShape = (props: any) => {
-  const { cx, cy, fill } = props;
+  const { cx, cy, fill, name } = props;
   const size = 33;
   if (cx === undefined || cy === undefined) return null;
+  const words =
+    typeof name === "string"
+      ? name
+          .split(/\s+/)
+          .map((w) => w.trim())
+          .filter(Boolean)
+      : [];
   return (
     <g>
-      <circle cx={cx} cy={cy} r={3} fill={fill} opacity={1} />
+      <circle cx={cx} cy={cy} r={3} fill={fill} opacity={0.9} />
       <image
         x={cx - size / 2}
         y={cy - size / 2 - 20}
@@ -38,6 +45,21 @@ const MarkerShape = (props: any) => {
         height={size}
         href={markers.default}
       />
+      {name ? (
+        <text
+          y={cy - words.length * 10}
+          fill={fill || "#fff"}
+          fontSize={12}
+          fontWeight={300}
+          letterSpacing={2}
+        >
+          {words.map((word, idx) => (
+            <tspan key={`${word}-${idx}`} x={cx + 15} dy={idx === 0 ? 0 : 12}>
+              {word}
+            </tspan>
+          ))}
+        </text>
+      ) : null}
     </g>
   );
 };
@@ -108,15 +130,26 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
           contentStyle={{ background: "rgba(15,23,42,0.9)", border: "none" }}
           labelStyle={{ color: "#e2e8f0" }}
           cursor={{ stroke: "rgba(226,232,240,0.4)", strokeWidth: 1 }}
-          formatter={(value: any, name) => {
+          formatter={(value: any, name, props) => {
+            // console.log({ value, name, props });
             if (name === "elevation") {
-              return [`${Math.round(value as number)} m`, "Elevation"];
+              const markerName = (props?.payload as any)?.name;
+
+              console.log({ markerName });
+
+              return [
+                `${Math.round(value as number)} m${
+                  markerName ? ` • ${markerName}` : ""
+                }`,
+                "Elevation",
+              ];
             }
             return value;
           }}
           labelFormatter={(label) =>
             `${Math.round((label as number) / 1000)} km`
           }
+          itemStyle={{ color: theme.colors.accent }}
         />
         <Line
           type="monotone"
@@ -136,7 +169,11 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
               y={m.elevation}
               r={7}
               shape={(props) => (
-                <MarkerShape {...props} fill={theme.colors.accent} />
+                <MarkerShape
+                  {...props}
+                  name={m.name}
+                  fill={theme.colors.accent}
+                />
               )}
             />
           ))}

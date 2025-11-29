@@ -65,6 +65,10 @@ export const computeMarkerPoints = (
       { point: null, dist: Number.POSITIVE_INFINITY }
     );
     if (nearest.point) {
+      // Skip if this marker matches the very first elevation point (start of route)
+      if (nearest.point.distance === 0) {
+        return;
+      }
       markers.push({
         distance: nearest.point.distance,
         elevation: nearest.point.elevation,
