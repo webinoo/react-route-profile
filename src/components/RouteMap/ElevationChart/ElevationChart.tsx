@@ -8,8 +8,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useTheme } from "../../theme-provider";
-import type { RouteConfig } from "../../types";
+import { useTheme } from "../../../theme-provider";
+import type { RouteConfig } from "../../../types";
+import { DistanceTick } from "./DistanceTick";
+import { ElevationTick } from "./ElevationTick";
+import { computeMinMax } from "./utils";
 
 interface ElevationChartProps {
   route: RouteConfig;
@@ -24,8 +27,10 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
   const hasData = points.length > 1;
 
   if (!hasData) {
-    return;
+    return null;
   }
+
+  const minMax = computeMinMax(points);
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -50,12 +55,13 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
         <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="3 3" />
         <XAxis
           dataKey="distance"
-          tickFormatter={(v) => `${Math.round(v / 1000)} km`}
+          tick={<DistanceTick />}
           stroke="rgba(226, 232, 240, 0.7)"
         />
         <YAxis
           dataKey="elevation"
-          tickFormatter={(v) => `${Math.round(v)} m`}
+          tick={<ElevationTick />}
+          domain={minMax as any}
           stroke="rgba(226, 232, 240, 0.7)"
           width={60}
         />
