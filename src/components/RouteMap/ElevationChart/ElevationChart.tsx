@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import {
   CartesianGrid,
+  ComposedChart,
   Line,
-  LineChart,
+  ReferenceDot,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -12,7 +13,11 @@ import { useTheme } from "../../../theme-provider";
 import type { RouteConfig } from "../../../types";
 import { DistanceTick } from "./DistanceTick";
 import { ElevationTick } from "./ElevationTick";
-import { computeMinMax, computeRoundedDomainAndTicks } from "./utils";
+import {
+  computeMarkerPoints,
+  computeMinMax,
+  computeRoundedDomainAndTicks,
+} from "./utils";
 
 interface ElevationChartProps {
   route: RouteConfig;
@@ -20,10 +25,18 @@ interface ElevationChartProps {
 
 export const ElevationChart = ({ route }: ElevationChartProps) => {
   const theme = useTheme();
-  const points = useMemo(
-    () => (route.geoJson as any)?.properties?.elevationProfile?.points || [],
-    [route.geoJson]
+  const points = useMemo(() => {
+    const raw =
+      (route.geoJson as any)?.properties?.elevationProfile?.points || [];
+    return [...raw].sort(
+      (a: any, b: any) => (a?.distance ?? 0) - (b?.distance ?? 0)
+    );
+  }, [route.geoJson]);
+  const markers = useMemo(
+    () => computeMarkerPoints(points, route.geoJson),
+    [points, route.geoJson]
   );
+  const maxDistance = points.length ? points[points.length - 1].distance : 0;
   const hasData = points.length > 1;
 
   const [min, max] = computeMinMax(points);
@@ -38,7 +51,7 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <LineChart
+      <ComposedChart
         data={points}
         margin={{ top: 4, right: 8, bottom: 4, left: 8 }}
       >
@@ -59,6 +72,8 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
         <CartesianGrid stroke="rgba(255,255,255,0.08)" strokeDasharray="3 3" />
         <XAxis
           dataKey="distance"
+          type="number"
+          domain={[0, maxDistance]}
           tick={<DistanceTick />}
           stroke="rgba(226, 232, 240, 0.7)"
         />
@@ -73,6 +88,7 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
         <Tooltip
           contentStyle={{ background: "rgba(15,23,42,0.9)", border: "none" }}
           labelStyle={{ color: "#e2e8f0" }}
+          cursor={{ stroke: "rgba(226,232,240,0.4)", strokeWidth: 1 }}
           formatter={(value: any, name) => {
             if (name === "elevation") {
               return [`${Math.round(value as number)} m`, "Elevation"];
@@ -89,11 +105,23 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
           stroke={theme.colors.primary}
           strokeWidth={2}
           dot={false}
-          activeDot={{ r: 3, fill: theme.colors.accent }}
+          activeDot={{ r: 4, fill: theme.colors.accent }}
           fill="url(#elevationGradient)"
           isAnimationActive={false}
         />
-      </LineChart>
+        {markers.length > 0 &&
+          markers.map((m, idx) => (
+            <ReferenceDot
+              key={`${m.distance}-${idx}`}
+              x={m.distance}
+              y={m.elevation}
+              r={7}
+              fill={theme.colors.accent}
+              stroke={"black"}
+              strokeWidth={4}
+            />
+          ))}
+      </ComposedChart>
     </ResponsiveContainer>
   );
 };
