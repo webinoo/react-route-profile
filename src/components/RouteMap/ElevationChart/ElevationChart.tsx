@@ -12,7 +12,7 @@ import { useTheme } from "../../../theme-provider";
 import type { RouteConfig } from "../../../types";
 import { DistanceTick } from "./DistanceTick";
 import { ElevationTick } from "./ElevationTick";
-import { computeMinMax } from "./utils";
+import { computeMinMax, computeRoundedDomainAndTicks } from "./utils";
 
 interface ElevationChartProps {
   route: RouteConfig;
@@ -26,11 +26,15 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
   );
   const hasData = points.length > 1;
 
+  const [min, max] = computeMinMax(points);
+  const [minY, maxY, tickVals] = useMemo(
+    () => computeRoundedDomainAndTicks([min, max]),
+    [min, max]
+  );
+
   if (!hasData) {
     return null;
   }
-
-  const minMax = computeMinMax(points);
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -61,7 +65,8 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
         <YAxis
           dataKey="elevation"
           tick={<ElevationTick />}
-          domain={minMax as any}
+          domain={[minY, maxY] as any}
+          ticks={tickVals as any}
           stroke="rgba(226, 232, 240, 0.7)"
           width={60}
         />
