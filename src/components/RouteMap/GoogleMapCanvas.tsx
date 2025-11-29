@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   DEFAULT_CENTER,
   DEFAULT_ZOOM_HORIZONTAL,
@@ -7,7 +7,9 @@ import {
 } from "../../constants";
 import { useTheme } from "../../theme-provider";
 import type { RouteConfig } from "../../types";
+import { findNearestPointByLatLng, getAllPoints } from "./ElevationChart/utils";
 import styles from "./GoogleMapCanvas.module.css";
+import { useHover } from "./HoverContext";
 
 interface GoogleMapCanvasProps {
   route: RouteConfig;
@@ -21,7 +23,11 @@ export const GoogleMapCanvas = ({
   isHorizontal,
 }: GoogleMapCanvasProps) => {
   const theme = useTheme();
+  const { hover, setHover } = useHover();
   const ref = useRef<HTMLDivElement | null>(null);
+  const highlightMarkerRef = useRef<google.maps.Marker | null>(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const points = useMemo(() => getAllPoints(route), [route]);
 
   useEffect(() => {
     if (!ref.current || !window.google?.maps) {
@@ -39,6 +45,7 @@ export const GoogleMapCanvas = ({
       mapTypeId: window.google.maps.MapTypeId.SATELLITE,
       streetViewControl: false,
     });
+    mapRef.current = map;
 
     map.data.setStyle((feature: google.maps.Data.Feature) => {
       const name = feature.getProperty("name") as string;
@@ -72,12 +79,66 @@ export const GoogleMapCanvas = ({
 
     map.data.addGeoJson(route.geoJson);
 
+    const moveListener = map.addListener(
+      "mousemove",
+      (e: google.maps.MapMouseEvent) => {
+        const latLng = e.latLng;
+        if (!latLng) return;
+        const nearest = findNearestPointByLatLng(points, {
+          lat: latLng.lat(),
+          lng: latLng.lng(),
+        });
+        if (nearest) {
+          setHover({
+            lat: nearest.lat,
+            lng: nearest.lng,
+          });
+        }
+      }
+    );
+
     return () => {
+      moveListener.remove();
       map.data.forEach((feature: google.maps.Data.Feature) => {
         map.data.remove(feature);
       });
+      mapRef.current = null;
     };
-  }, [route, isHorizontal, theme.colors.primaryMuted, theme.colors.accent]);
+  }, [
+    route,
+    isHorizontal,
+    theme.colors.primaryMuted,
+    theme.colors.accent,
+    points,
+    setHover,
+  ]);
+
+  useEffect(() => {
+    if (!ref.current || !window.google?.maps) return;
+    const mapInstance = mapRef.current;
+    if (!mapInstance) return;
+    if (!hover.lat || !hover.lng) {
+      if (highlightMarkerRef.current) {
+        highlightMarkerRef.current.setMap(null);
+        highlightMarkerRef.current = null;
+      }
+      return;
+    }
+    if (!highlightMarkerRef.current) {
+      highlightMarkerRef.current = new window.google.maps.Marker({
+        map: mapInstance,
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 6,
+          fillColor: theme.colors.accent,
+          fillOpacity: 1,
+          strokeWeight: 0,
+        },
+      });
+    }
+    highlightMarkerRef.current.setPosition({ lat: hover.lat, lng: hover.lng });
+    highlightMarkerRef.current.setMap(mapInstance);
+  }, [hover, theme.colors.accent]);
 
   return (
     <div

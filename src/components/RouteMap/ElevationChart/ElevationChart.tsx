@@ -20,7 +20,8 @@ import {
   computeMinMax,
   computeRoundedDomainAndTicks,
   getMaxDistance,
-  getPoints,
+  getPointsWithElevation,
+  isCloseCheck,
 } from "./utils";
 
 interface ElevationChartProps {
@@ -29,7 +30,7 @@ interface ElevationChartProps {
 
 export const ElevationChart = ({ route }: ElevationChartProps) => {
   const theme = useTheme();
-  const points = useMemo(() => getPoints(route), [route]);
+  const points = useMemo(() => getPointsWithElevation(route), [route]);
   const markers = useMemo(
     () => computeMarkerPoints(points, route.geoJson),
     [points, route.geoJson]
@@ -71,7 +72,6 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
           type="number"
           domain={[0, maxDistance]}
           tick={<DistanceTick />}
-          tickCount={20}
           stroke="rgba(226, 232, 240, 0.7)"
         />
         <YAxis
@@ -104,11 +104,7 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
         />
         {markers.length > 0 &&
           markers.map((m, idx) => {
-            const next = markers[idx + 1];
-            const nextDistance =
-              next && Math.abs((next.distance ?? 0) - (m.distance ?? 0));
-
-            const tooClose = nextDistance < 1000;
+            const tooClose = isCloseCheck(markers[idx], markers[idx + 1]);
             return (
               <ReferenceDot
                 key={`${m.distance}-${idx}`}

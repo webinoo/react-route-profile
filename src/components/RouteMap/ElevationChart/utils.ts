@@ -1,21 +1,30 @@
 import type { ElevationPoint, Marker } from "./types";
 
-export const getMaxDistance = (points: ElevationPoint[]) => points.length ? points[points.length - 1].distance : 0;
+export const getMaxDistance = (points: ElevationPoint[]) =>
+  points.length ? points[points.length - 1].distance : 0;
 
-export const getPoints = (route: any): ElevationPoint[] => {
+export const getPointsWithElevation = (route: any): ElevationPoint[] => {
   const geo = route.geoJson as any;
-  const fromCollection = geo?.properties?.elevationProfile?.points || [];
-  const fromLine =
-    geo?.features?.find(
-      (f: any) =>
-        f?.geometry?.type === "LineString" &&
-        f?.properties?.elevationProfile?.points
-    )?.properties?.elevationProfile?.points || [];
-  const raw = fromLine.length ? fromLine : fromCollection;
+  const line = geo?.features?.find(
+    (f: any) =>
+      f?.geometry?.type === "LineString" &&
+      f?.properties?.elevationProfile?.points
+  );
+  const raw = line?.properties?.elevationProfile?.points || [];
   return [...raw].sort(
     (a: ElevationPoint, b: ElevationPoint) => (a?.distance ?? 0) - (b?.distance ?? 0)
   );
 };
+
+export const getAllPoints = (route: any): [number, number][] => {
+    const geo = route.geoJson as any;
+    const points = geo?.features?.find(
+    (f: any) =>
+      f?.geometry?.type === "LineString" &&
+      f?.geometry?.coordinates
+    );
+    return points.geometry.coordinates
+}
 
 export const computeMinMax = (points: Array<{ elevation: number }>) => {
   if (!points.length) return [0, 0] as const;
@@ -88,6 +97,23 @@ export const computeMarkerPoints = (
   return markers.sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
 };
 
+export const findNearestPointByLatLng = (
+  points: [number, number][],
+  target: { lat: number; lng: number }
+): ElevationPoint | null => {
+  if (!points.length) return null;
+  let closest: ElevationPoint | null = null;
+  let minDist = Number.POSITIVE_INFINITY;
+  points.forEach(([lng, lat]) => {
+    const d = ((lat - target.lat) ** 2) + ((lng - target.lng) ** 2);
+    if (d < minDist) {
+      minDist = d;
+      closest = { lat, lng } as ElevationPoint;
+    }
+  });
+  return closest;
+};
+
 const DISTANCE_THRESHOLD = 1000; // meters
 
 export const isCloseCheck = (
@@ -97,6 +123,6 @@ export const isCloseCheck = (
 ) => {
   return (
     marker2 &&
-    Math.abs((marker1.elevation ?? 0) - (marker2.elevation ?? 0)) <= threshold
+    Math.abs((marker2.distance ?? 0) - (marker1.distance ?? 0)) < threshold
   );
 };

@@ -4,6 +4,7 @@ import { useOrientation } from "../../hooks/useOrientation";
 import { theme as defaultTheme, PartialTheme } from "../../theme";
 import { ThemeProvider } from "../../theme-provider";
 import type { RouteConfig } from "../../types";
+import { HoverProvider } from "./HoverContext";
 import Loader from "../Loader";
 import { ElevationChart } from "./ElevationChart";
 import { GoogleMapCanvas } from "./GoogleMapCanvas";
@@ -68,20 +69,22 @@ export const RouteMap = ({
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={className} style={containerStyle}>
-        <Wrapper apiKey={apiKey} render={(status) => render(status, height)}>
-          <GoogleMapCanvas
-            route={route}
-            height={height}
-            isHorizontal={isHorizontal}
-          />
-        </Wrapper>
-        <div className={styles.chartLayer}>
-          <div className={styles.chartBody}>
-            <ElevationChart route={route} />
+      <HoverProvider>
+        <div className={className} style={containerStyle}>
+          <Wrapper apiKey={apiKey} render={(status) => render(status, height)}>
+            <GoogleMapCanvas
+              route={route}
+              height={height}
+              isHorizontal={isHorizontal}
+            />
+          </Wrapper>
+          <div className={styles.chartLayer}>
+            <div className={styles.chartBody}>
+              <ElevationChart route={route} />
+            </div>
           </div>
         </div>
-      </div>
+      </HoverProvider>
     </ThemeProvider>
   );
 };
