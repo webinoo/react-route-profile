@@ -13,6 +13,7 @@ import { useTheme } from "../../../theme-provider";
 import type { RouteConfig } from "../../../types";
 import { DistanceTick } from "./DistanceTick";
 import { ElevationTick } from "./ElevationTick";
+import { ElevationTooltip } from "./ElevationTooltip";
 import { MarkerShape } from "./MarkerShape";
 import {
   computeMarkerPoints,
@@ -76,6 +77,7 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
           type="number"
           domain={[0, maxDistance]}
           tick={<DistanceTick />}
+          tickCount={20}
           stroke="rgba(226, 232, 240, 0.7)"
         />
         <YAxis
@@ -87,26 +89,14 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
           width={60}
         />
         <Tooltip
-          contentStyle={{ background: "rgba(15,23,42,0.9)", border: "none" }}
-          labelStyle={{ color: "#e2e8f0" }}
           cursor={{ stroke: "rgba(226,232,240,0.4)", strokeWidth: 1 }}
-          formatter={(value: any, name, props) => {
-            if (name === "elevation") {
-              const markerName = (props?.payload as any)?.name;
-
-              return [
-                `${Math.round(value as number)} m${
-                  markerName ? ` • ${markerName}` : ""
-                }`,
-                "Elevation",
-              ];
-            }
-            return value;
-          }}
-          labelFormatter={(label) =>
-            `${Math.round((label as number) / 1000)} km`
+          content={
+            <ElevationTooltip
+              accent={theme.colors.accent}
+              primary={theme.colors.primary}
+              markers={markers}
+            />
           }
-          itemStyle={{ color: theme.colors.accent }}
         />
         <Line
           type="monotone"
