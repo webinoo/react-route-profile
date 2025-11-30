@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { useTheme } from "../../../theme-provider";
 import type { RouteConfig } from "../../../types";
+import { useHover } from "../HoverContext";
 import { DistanceTick } from "./DistanceTick";
 import { ElevationTick } from "./ElevationTick";
 import { ElevationTooltip } from "./ElevationTooltip";
@@ -29,6 +30,7 @@ interface ElevationChartProps {
 }
 
 export const ElevationChart = ({ route }: ElevationChartProps) => {
+  const { hover, setHover } = useHover();
   const theme = useTheme();
   const points = useMemo(() => getPointsWithElevation(route), [route]);
   const markers = useMemo(
@@ -51,6 +53,14 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
       <ComposedChart
         data={points}
         margin={{ top: 4, right: 8, bottom: 4, left: 8 }}
+        onMouseMove={({ activePayload }) => {
+          const activePayloadItem = activePayload?.[0];
+          if (!activePayloadItem) {
+            return;
+          }
+          const { lat, lng } = activePayloadItem.payload;
+          setHover({ lat, lng });
+        }}
       >
         <defs>
           <linearGradient id="elevationGradient" x1="0" y1="0" x2="0" y2="1">
