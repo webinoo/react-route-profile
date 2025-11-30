@@ -25,6 +25,9 @@ export const ElevationTooltip = ({
       MARKER_DISTANCE_TOLERANCE_MATCH
   );
 
+  const km = Math.trunc((label as number) / 1000);
+  const m = Math.round((label as number) % 1000);
+
   return (
     <div
       style={{
@@ -36,7 +39,7 @@ export const ElevationTooltip = ({
       }}
     >
       <div style={{ fontWeight: 600, color: primary }}>
-        {Math.round((label as number) / 1000)} km
+        {km} km {m} m
       </div>
       <div>
         Elevation: <strong>{Math.round(point?.elevation ?? 0)} m</strong>

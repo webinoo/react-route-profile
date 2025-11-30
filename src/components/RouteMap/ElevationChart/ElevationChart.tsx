@@ -22,6 +22,7 @@ import {
   computeRoundedDomainAndTicks,
   getMaxDistance,
   getPointsWithElevation,
+  getTicksForDistance,
   isCloseCheck,
 } from "./utils";
 
@@ -38,6 +39,7 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
     [points, route.geoJson]
   );
   const maxDistance = getMaxDistance(points);
+  const ticks = getTicksForDistance(maxDistance);
   const [min, max] = computeMinMax(points);
   const [minY, maxY, tickVals] = useMemo(
     () => computeRoundedDomainAndTicks([min, max]),
@@ -81,6 +83,7 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
           dataKey="distance"
           type="number"
           domain={[0, maxDistance]}
+          ticks={ticks}
           tick={<DistanceTick />}
           stroke="rgba(226, 232, 240, 0.7)"
         />

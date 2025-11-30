@@ -3,6 +3,17 @@ import type { ElevationPoint, Marker } from "./types";
 export const getMaxDistance = (points: ElevationPoint[]) =>
   points.length ? points[points.length - 1].distance : 0;
 
+export const getTicksForDistance = (maxDistance: number, step: number = 2000) => {
+  const ticks: number[] = [];
+  for (let d = 0; d <= maxDistance; d += step) {
+    ticks.push(d);
+  }
+  if (ticks[ticks.length - 1] < maxDistance) {
+    ticks.push(maxDistance);
+  }
+  return ticks;
+}
+
 export const getPointsWithElevation = (route: any): ElevationPoint[] => {
   const geo = route.geoJson as any;
   const line = geo?.features?.find(
