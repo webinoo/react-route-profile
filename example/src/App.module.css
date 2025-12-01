@@ -24,8 +24,6 @@ h4 {
 .header {
   position: sticky;
   top: 0;
-  display: flex;
-  align-items: center;
   padding: 1.5em;
   background: rgba(9, 13, 26, 0.92);
   border-bottom: 1px solid rgba(226, 232, 240, 0.1);
@@ -54,7 +52,9 @@ h4 {
 
 .actions {
   display: flex;
+  flex: 1;
   align-items: center;
+  justify-content: space-between;
   gap: 1em;
   flex-wrap: wrap;
   margin-top: 1em;
@@ -62,24 +62,24 @@ h4 {
 
 .themeSwitcher {
   display: flex;
-  gap: 0.75em;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em;
 }
 
-.themeButton {
-  padding: 0.4em 0.75em;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(14, 165, 233, 0.5);
-  color: #e2e8f0;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 150ms ease;
+.themeLabel {
+  color: rgba(14, 165, 233, 0.2);
+  font-size: 0.9em;
 }
 
+.themeSelect {
+  background: transparent;
+  color: rgba(14, 165, 233, 0.2);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 6px;
+  padding: 0.5em;
+  outline: none;
+}
 .scrollDown {
-  font-size: 1em;
-  font-weight: 300;
-  margin-top: 1em;
   cursor: pointer;
 }
 
@@ -193,5 +193,14 @@ h4 {
   .content section > :not(.codeBlock):not(.apiTable) {
     margin-left: 20px;
     margin-right: 20px;
+  }
+
+  .scrollDown {
+    font-size: 0.8em
+  }
+
+  .themeSelect {
+    padding: 0.3em;
+    font-size: 1em;
   }
 }

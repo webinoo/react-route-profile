@@ -12,5 +12,5 @@ export const markers = {
   finish: markerFinishSvg,
 }
 
-export const RATIO_HEADER_MOBILE = 0.25
+export const RATIO_HEADER_MOBILE = 0.20
 export const RATIO_HEADER_DESKTOP = 0.15

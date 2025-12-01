@@ -66,32 +66,30 @@ function App() {
             Trailforks, Outdooractive, Komoot, or Bikemap.
           </h2>
           <div className={styles.actions}>
-            <Link to="usage" smooth duration={1000}>
-              Scroll down for Usage
-            </Link>
+            <div className={styles.scrollDown}>
+              <Link to="usage" smooth duration={1000}>
+                Scroll down for Usage
+              </Link>
+            </div>
+
             <div className={styles.themeSwitcher}>
-              {Object.keys(themes).map((key) => (
-                <button
-                  type="button"
-                  key={key}
-                  className={styles.themeButton}
-                  style={{
-                    background:
-                      key === themeKey
-                        ? themes[key].colors?.primary
-                        : "transparent",
-                    borderColor:
-                      themeKey === key
-                        ? themes[key].colors?.primary
-                        : "transparent",
-                    color:
-                      key === themeKey ? "black" : themes[key].colors?.primary,
-                  }}
-                  onClick={() => setThemeKey(key as keyof typeof themes)}
-                >
-                  {key}
-                </button>
-              ))}
+              <label className={styles.themeLabel} htmlFor="theme-select">
+                Theme
+              </label>
+              <select
+                id="theme-select"
+                className={styles.themeSelect}
+                value={themeKey}
+                onChange={(e) =>
+                  setThemeKey(e.target.value as keyof typeof themes)
+                }
+              >
+                {Object.keys(themes).map((key) => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
