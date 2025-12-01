@@ -108,7 +108,7 @@ export const computeMarkerPoints = (
   return markers.sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
 };
 
-export const findNearestPointByLatLng = (
+export const findNearestPointByCoordinates = (
   points: [number, number][],
   target: { lat: number; lng: number }
 ): ElevationPoint | null => {
@@ -120,6 +120,23 @@ export const findNearestPointByLatLng = (
     if (d < minDist) {
       minDist = d;
       closest = { lat, lng } as ElevationPoint;
+    }
+  });
+  return closest;
+};
+
+export const findNearestPoint = (
+  points: ElevationPoint[],
+  target: [number, number]
+): ElevationPoint | null => {
+  if (!points.length) return null;
+  let closest: ElevationPoint | null = null;
+  let minDist = Number.POSITIVE_INFINITY;
+  points.forEach((p) => {
+    const d = ((p.lat - target[0]) ** 2) + ((p.lng - target[1]) ** 2);
+    if (d < minDist) {
+      minDist = d;
+      closest = p;
     }
   });
   return closest;

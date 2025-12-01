@@ -7,9 +7,14 @@ import {
   useState,
 } from "react";
 
+export enum HoverStateChangeSource {
+  Chart = "chart",
+  Map = "map",
+}
 export interface HoverState {
   lat?: number;
   lng?: number;
+  source?: HoverStateChangeSource;
 }
 
 interface HoverContextValue {

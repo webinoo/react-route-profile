@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { markers } from "../../../constants";
+import { ElevationDot } from "./ElevationDot";
 
 export const MarkerShape = (props: any) => {
   const { cx, cy, fill, name } = props;
@@ -14,7 +15,7 @@ export const MarkerShape = (props: any) => {
       : [];
   return (
     <g>
-      <circle cx={cx} cy={cy} r={3} fill={fill} opacity={0.9} />
+      <ElevationDot cx={cx} cy={cy} />
       <image
         x={cx - size / 2}
         y={cy - size / 2 - 20}

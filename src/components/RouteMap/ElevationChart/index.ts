@@ -5,7 +5,7 @@ export type { ElevationPoint, Marker } from "./types";
 export {
   computeMinMax,
   computeRoundedDomainAndTicks,
-  findNearestPointByLatLng,
+  findNearestPointByCoordinates,
   getMaxDistance
 } from "./utils";
 

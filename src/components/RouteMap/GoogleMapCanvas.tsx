@@ -7,9 +7,12 @@ import {
 } from "../../constants";
 import { useTheme } from "../../theme-provider";
 import type { RouteConfig } from "../../types";
-import { findNearestPointByLatLng, getAllPoints } from "./ElevationChart/utils";
+import {
+  findNearestPointByCoordinates,
+  getAllPoints,
+} from "./ElevationChart/utils";
 import styles from "./GoogleMapCanvas.module.css";
-import { useHover } from "./HoverContext";
+import { HoverStateChangeSource, useHover } from "./HoverContext";
 
 interface GoogleMapCanvasProps {
   route: RouteConfig;
@@ -84,7 +87,7 @@ export const GoogleMapCanvas = ({
       (e: google.maps.MapMouseEvent) => {
         const latLng = e.latLng;
         if (!latLng) return;
-        const nearest = findNearestPointByLatLng(points, {
+        const nearest = findNearestPointByCoordinates(points, {
           lat: latLng.lat(),
           lng: latLng.lng(),
         });
@@ -92,6 +95,7 @@ export const GoogleMapCanvas = ({
           setHover({
             lat: nearest.lat,
             lng: nearest.lng,
+            source: HoverStateChangeSource.Map,
           });
         }
       }
