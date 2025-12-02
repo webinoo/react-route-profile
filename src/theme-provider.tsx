@@ -8,6 +8,14 @@ const mergeTheme = (override?: PartialTheme): Theme => ({
     ...defaultTheme.colors,
     ...(override?.colors ?? {}),
   },
+  marker: {
+    ...defaultTheme.marker,
+    ...(override?.marker ?? {}),
+  },
+  dots: {
+    ...defaultTheme.dots,
+    ...(override?.dots ?? {}),
+  },
 });
 
 export const ThemeProvider = ({

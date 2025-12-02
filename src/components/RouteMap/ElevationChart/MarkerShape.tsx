@@ -1,11 +1,20 @@
-import { useId } from "react";
-import { markers } from "../../../constants";
-import { ElevationDot } from "./ElevationDot";
+import { useId, useMemo } from "react";
+import { useTheme } from "../../../theme-provider";
+import { buildMarkerIcon } from "../../icons/buildMarkerIcon";
+import { MapDot } from "./ElevationDot";
 
 export const MarkerShape = (props: any) => {
   const { cx, cy, fill, name } = props;
+  const theme = useTheme();
   const size = 33;
+
+  const iconHref = useMemo(
+    () => buildMarkerIcon(theme.marker.outer, theme.marker.inner),
+    [theme.marker.inner, theme.marker.outer]
+  );
+
   if (cx === undefined || cy === undefined) return null;
+
   const words =
     typeof name === "string"
       ? name
@@ -15,13 +24,13 @@ export const MarkerShape = (props: any) => {
       : [];
   return (
     <g>
-      <ElevationDot cx={cx} cy={cy} />
+      <MapDot cx={cx} cy={cy} />
       <image
         x={cx - size / 2}
         y={cy - size / 2 - 20}
         width={size}
         height={size}
-        href={markers.default}
+        href={iconHref}
       />
       {name ? <Text words={words} cx={cx} cy={cy} fill={fill} /> : null}
     </g>

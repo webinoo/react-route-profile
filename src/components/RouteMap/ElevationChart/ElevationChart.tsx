@@ -144,7 +144,7 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
             }
             return <ElevationDot cx={cx} cy={cy} />;
           }}
-          activeDot={{ r: 3, fill: theme.colors.accent, strokeWidth: 0 }}
+          activeDot={{ r: 3, fill: theme.dots.chartActive, strokeWidth: 0 }}
           fill="url(#elevationGradient)"
           isAnimationActive={false}
         />

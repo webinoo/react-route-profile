@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { RouteMap, useMapHeader } from "react-route-profile";
 import { Element, Link } from "react-scroll";
-import { PartialTheme } from "../../src/theme";
+import type { PartialTheme } from "../../src/theme";
 import styles from "./App.module.css";
 import { route01 } from "./data/01-info";
 import { Usage } from "./Usage";
@@ -18,20 +18,29 @@ const themes: Record<string, PartialTheme> = {
       surface: "rgba(248, 250, 252, 1)",
     },
   },
-  sunset: {
+  neon: {
     colors: {
-      primary: "rgba(244, 114, 182, 1)",
-      primaryMuted: "rgba(244, 114, 182, 0.7)",
-      accent: "rgba(249, 115, 22, 1)",
-      surface: "rgba(255, 247, 237, 1)",
+      primary: "rgba(59, 130, 246, 1)",
+      primaryMuted: "rgba(59, 130, 246, 0.6)",
+      accent: "rgba(252, 211, 77, 1)",
+    },
+    marker: {
+      outer: "rgba(252, 211, 77, 1)",
+    },
+    dots: {
+      mapActive: "rgba(239, 68, 68, 1)",
+      chart: "rgba(239, 68, 68, 1)",
+      chartActive: "rgba(239, 68, 68, 1)",
     },
   },
-  forest: {
+  magma: {
     colors: {
-      primary: "rgba(52, 211, 153, 1)",
-      primaryMuted: "rgba(52, 211, 153, 0.7)",
-      accent: "rgba(74, 222, 128, 1)",
-      surface: "rgba(240, 253, 244, 1)",
+      primary: "rgba(239, 68, 68, 1)",
+      primaryMuted: "rgba(239, 68, 68, 0.6)",
+      accent: "rgba(239, 68, 68, 1)",
+    },
+    marker: {
+      outer: "rgba(239, 68, 68, 0.6)",
     },
   },
 };

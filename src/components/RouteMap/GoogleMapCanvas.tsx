@@ -3,10 +3,10 @@ import {
   DEFAULT_CENTER,
   DEFAULT_ZOOM_HORIZONTAL,
   DEFAULT_ZOOM_VERTICAL,
-  markers,
 } from "../../constants";
 import { useTheme } from "../../theme-provider";
 import type { RouteConfig } from "../../types";
+import { buildMarkerIcon } from "../icons/buildMarkerIcon";
 import {
   findNearestPointByCoordinates,
   getAllPoints,
@@ -31,6 +31,14 @@ export const GoogleMapCanvas = ({
   const highlightMarkerRef = useRef<google.maps.Marker | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const points = useMemo(() => getAllPoints(route), [route]);
+  const markerIcons = useMemo(
+    () => ({
+      default: buildMarkerIcon(theme.marker.outer, theme.marker.inner),
+      start: buildMarkerIcon(theme.marker.outer, theme.marker.startInner),
+      finish: buildMarkerIcon(theme.marker.outer, theme.marker.finishInner),
+    }),
+    [theme.marker]
+  );
 
   useEffect(() => {
     if (!ref.current || !window.google?.maps) {
@@ -60,10 +68,10 @@ export const GoogleMapCanvas = ({
         strokeWeight: 10,
         icon: {
           url: isFirst
-            ? markers.start
+            ? markerIcons.start
             : isLast
-            ? markers.finish
-            : markers.default,
+            ? markerIcons.finish
+            : markerIcons.default,
           scaledSize: new window.google.maps.Size(50, 50),
           optimized: false,
           zIndex: isFirst || isLast ? 100 : 10,
@@ -108,14 +116,7 @@ export const GoogleMapCanvas = ({
       });
       mapRef.current = null;
     };
-  }, [
-    route,
-    isHorizontal,
-    theme.colors.primaryMuted,
-    theme.colors.accent,
-    points,
-    setHover,
-  ]);
+  }, [route, isHorizontal, theme, points, setHover, markerIcons]);
 
   useEffect(() => {
     if (!ref.current || !window.google?.maps) return;
@@ -134,7 +135,7 @@ export const GoogleMapCanvas = ({
         icon: {
           path: window.google.maps.SymbolPath.CIRCLE,
           scale: 6,
-          fillColor: theme.colors.accent,
+          fillColor: theme.dots.mapActive,
           fillOpacity: 1,
           strokeWeight: 0,
         },
@@ -142,7 +143,7 @@ export const GoogleMapCanvas = ({
     }
     highlightMarkerRef.current.setPosition({ lat: hover.lat, lng: hover.lng });
     highlightMarkerRef.current.setMap(mapInstance);
-  }, [hover, theme.colors.accent]);
+  }, [hover, theme]);
 
   return (
     <div

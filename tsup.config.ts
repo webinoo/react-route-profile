@@ -14,5 +14,6 @@ export default defineConfig({
   external: ["react", "react-dom"],
   loader: {
     ".css": "css",
+    ".svg": "text",
   },
 });
