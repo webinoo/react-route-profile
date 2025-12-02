@@ -129,17 +129,20 @@ export const GoogleMapCanvas = ({
       }
       return;
     }
+    const icon = {
+      path: window.google.maps.SymbolPath.CIRCLE,
+      scale: 6,
+      fillColor: theme.dots.mapActive,
+      fillOpacity: 1,
+      strokeWeight: 0,
+    };
     if (!highlightMarkerRef.current) {
       highlightMarkerRef.current = new window.google.maps.Marker({
         map: mapInstance,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 6,
-          fillColor: theme.dots.mapActive,
-          fillOpacity: 1,
-          strokeWeight: 0,
-        },
+        icon,
       });
+    } else {
+      highlightMarkerRef.current.setIcon(icon);
     }
     highlightMarkerRef.current.setPosition({ lat: hover.lat, lng: hover.lng });
     highlightMarkerRef.current.setMap(mapInstance);
