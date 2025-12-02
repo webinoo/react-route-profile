@@ -5,8 +5,8 @@ export const Usage = () => (
     <section>
       <h3>Overview</h3>
       <p>
-        A minimal React component that renders a Google Maps view for a route,
-        using your
+        A minimal React component that renders a Google Maps view for a route
+        with an interactive elevation profile, using your
         <code className={styles.inlineCode}>
           Google Maps JavaScript API key
         </code>
