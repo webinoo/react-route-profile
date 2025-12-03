@@ -71,7 +71,11 @@ export const ElevationChart = ({ route }: ElevationChartProps) => {
   }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer
+      width="100%"
+      height="100%"
+      style={{ userSelect: "none" }}
+    >
       <ComposedChart
         data={points}
         margin={theme.chart.margin}
